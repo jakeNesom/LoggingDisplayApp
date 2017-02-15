@@ -5,4 +5,5 @@ import { Component } from '@angular/core';
   templateUrl: `app/views/nav.html`,
   styleUrls: ['app/css/nav.css']
 })
+
 export class NavComponent  { name = 'Angular'; }
