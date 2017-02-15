@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'graph-app',
-  template: `<h1>Hello {{name}}</h1>`,
+  templateUrl: `app/views/main.html`,
+  styleUrls: ['app/css/main.css']
 })
 export class AppComponent  { name = 'Angular'; }
