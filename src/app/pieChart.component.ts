@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
  
 @Component({
-  selector: 'pieChart',
-  templateUrl: 'app/views/piechart.html',
-  styleUrls: ['app/css/piechart.css']
+  selector: 'piechart',
+  templateUrl: 'app/views/piechart.html'  
+  
 })
 
 export class PieChart {

@@ -6,7 +6,7 @@ import { ChartsModule } from 'ng2-charts';
 import { AppComponent }  from './app.component';
 import { NavComponent }  from './nav.component';
 import { PieChart } from "./pieChart.component";
-
+import { OptionsComponent } from "./options.component";
 
 @NgModule({
   imports:      [ 
@@ -15,7 +15,9 @@ import { PieChart } from "./pieChart.component";
     ],
   declarations: [ 
     AppComponent,
-    NavComponent 
+    NavComponent,
+    PieChart,
+    OptionsComponent
     ],
   bootstrap:    [ AppComponent ]
 })
