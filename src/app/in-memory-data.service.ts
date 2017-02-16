@@ -19,7 +19,7 @@ export class InMemoryDataService implements InMemoryDbService {
             {id: 9, client: "Client 3", time: "12:16:00"},
             {id: 10, client: "Client 1", time: "12:20:00"}
             
-        ]
+        ];
     
 
         return { loggerData };

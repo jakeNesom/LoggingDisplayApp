@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LoggerService } from './loggerdata.service';
 
 import { Dataset } from './definitions/dataset';
@@ -12,7 +12,7 @@ import { Dataset } from './definitions/dataset';
 
 export class PieChart {
 
-  public loggerData:Dataset[] = [];
+  public dataset:Dataset[] = [];
 
    // lineChart from example
   public lineChartData:Array<any> = [
@@ -33,18 +33,20 @@ export class PieChart {
 
 
   ngOnInit(): void {
-    this.loggerService.getLoggerData()
-      .then(data => this.loggerData);
 
+    this.loggerService.getLoggerData()
+      .then(dataset => this.dataset = dataset );
+
+      alert(this.dataset);
       this.setLabels();
   }
 
   private setLabels():void {
-     for(let x = 0; x < this.loggerData.length; x++)
+     for(let x = 0; x < this.dataset.length; x++)
      {
-        if (this.pieChartLabels.indexOf(this.loggerData.client) == -1 )
+        if (this.pieChartLabels.indexOf(this.dataset[x].client) == -1 )
         {
-          this.pieChartLabels.push(this.loggerData[x].client);
+          this.pieChartLabels.push(this.dataset[x].client);
         }
      }
      
