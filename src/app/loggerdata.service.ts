@@ -18,7 +18,7 @@ export class LoggerService {
 
         return this.http.get(this.loggerUrl)
             .toPromise()
-            .then(response => response.json().data as loggerData[] )
+            .then(response => response.json().data)   //do i need to declare a type for the data?
             .catch(this.handleError);
     }
 
