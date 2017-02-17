@@ -14,6 +14,8 @@ export class PieChart {
 
   public dataset:Dataset[] = [];
 
+  public clientTotals:any[] = [];
+
    // lineChart from example
   public lineChartData:Array<any> = [
     [65, 59, 80, 81, 56, 55, 40],
@@ -38,23 +40,64 @@ export class PieChart {
       .then(dataset => this.dataset = dataset );
       
     this.loggerService.getLoggerData()
-      .then(dataset => this.setLabels(dataset) )
+      .then(dataset => this.setLabels(dataset) );
+
+   
   }
 
   private setLabels(incomingData:any) {
-    alert("client of 0: " + incomingData[0].client);
+    
+    //
+    this.setTotals(incomingData);
+
     let labels:any = [];
-     for(let x = 0; x < incomingData.length; x++)
+     for(let x = 0; x < this.clientTotals.length; x++)
      {
-        if (labels.indexOf(incomingData[x].client) === -1 )
+        if (labels.indexOf(this.clientTotals[x]) === -1 )
         {
-          labels.push(incomingData[x].client);
+          labels.push(this.clientTotals[x]);
         }
      }
+
+     this.setNumbersArray();
 
      return this.pieChartLabels = labels;
      
   }
+
+  // sets total logs received from each client
+  private setTotals(incomingData:any) {
+
+      let totals = [];
+
+      for(let x = 0; x < incomingData.length; x++ )
+      if(totals.indexOf(incomingData[x].client) === -1)
+      {
+        totals.push(incomingData[x].client);
+        totals[incomingData[x].client] = 1;
+      }
+      else 
+      {
+          totals[incomingData[x].client]++;
+      }
+      
+      
+      return this.clientTotals = totals;
+  }
+
+  private setNumbersArray() 
+  {
+    let dataArray:any[] = [];
+
+    for( let i = 0; i < this.clientTotals.length; i++ )
+    {
+      dataArray[this.clientTotals[i]] = this.clientTotals[i];
+    }
+
+    return this.pieChartData = dataArray;
+  }
+
+  
  
  
  // Following functions come with pie chart example 
