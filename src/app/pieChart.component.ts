@@ -13,7 +13,7 @@ import { Dataset } from './definitions/dataset';
 export class PieChart {
 
   public dataset:Dataset[] = [];
-
+  
   public clientTotals:any[] = [];
 
    // lineChart from example
@@ -47,19 +47,17 @@ export class PieChart {
 
   private setLabels(incomingData:any) {
     
-    //
-    this.setTotals(incomingData);
-
+  
     let labels:any = [];
-     for(let x = 0; x < this.clientTotals.length; x++)
+     for(let x = 0; x < incomingData.length; x++)
      {
-        if (labels.indexOf(this.clientTotals[x]) === -1 )
+        if (labels.indexOf(incomingData[x].client) === -1 )
         {
-          labels.push(this.clientTotals[x]);
+          labels.push(incomingData[x].client);
         }
      }
 
-     this.setNumbersArray();
+     
 
      return this.pieChartLabels = labels;
      
