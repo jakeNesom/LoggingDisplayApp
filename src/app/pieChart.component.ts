@@ -68,7 +68,7 @@ export class PieChart {
   // sets total logs received from each client
   private setTotals(incomingData:any) {
 
-      let totals = [];
+      let totals:any[] = [];
 
       for(let x = 0; x < incomingData.length; x++ )
       if(totals.indexOf(incomingData[x].client) === -1)
