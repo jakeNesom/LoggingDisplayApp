@@ -1,9 +1,17 @@
 <div style="display:block;">
-<canvas baseChart
+<canvas baseChart width="200" height="200"
                 [data]="pieChartData"
                 [labels]="pieChartLabels"
                 [chartType]="pieChartType"
                 (chartHover)="chartHovered($event)"
                 (chartClick)="chartClicked($event)"></canvas>
 </div>
+
+<ul>
+  <li *ngFor="let record of dataset">Record #: {{record.id}} Client: {{record.client}} TimeStamp: {{record.time}}</li>
+</ul> 
+
+<ul>
+  <li *ngFor="let label of pieChartLabels"> Label: {{label}} </li>
+</ul>
 

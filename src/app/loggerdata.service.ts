@@ -4,6 +4,7 @@ import { Headers, Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
 import { Dataset } from './definitions/dataset';
+
 @Injectable ()
 export class LoggerService {
 
@@ -15,7 +16,7 @@ export class LoggerService {
         return 
     }
 
-    getLoggerData(): Promise <any[]> {
+    getLoggerData(): Promise <Dataset[]> {
         
         
         return this.http.get(this.loggerUrl)
@@ -23,6 +24,8 @@ export class LoggerService {
             .then(response => response.json().data as Dataset[])   //do i need to declare a type for the data?
             .catch(this.handleError);
     }
+
+    
 
     private handleError(error: any): Promise <any> {
         console.error('An error occured', error);

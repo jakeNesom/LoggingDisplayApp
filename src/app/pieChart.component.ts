@@ -24,7 +24,7 @@ export class PieChart {
   public pieChartType:string = 'pie';
  
   // Pie from example
-  public pieChartLabels:string[] = ['Download Sales', 'In-Store Sales', 'Mail Sales'];
+  public pieChartLabels:string[] = ['Sac County', 'Calaveras Health Clinic', 'Client 3'];
   public pieChartData:number[] = [300, 500, 100];
   
   
@@ -36,19 +36,23 @@ export class PieChart {
 
     this.loggerService.getLoggerData()
       .then(dataset => this.dataset = dataset );
-
-      alert(this.dataset);
-      this.setLabels();
+      
+    this.loggerService.getLoggerData()
+      .then(dataset => this.setLabels(dataset) )
   }
 
-  private setLabels():void {
-     for(let x = 0; x < this.dataset.length; x++)
+  private setLabels(incomingData:any) {
+    alert("client of 0: " + incomingData[0].client);
+    let labels:any = [];
+     for(let x = 0; x < incomingData.length; x++)
      {
-        if (this.pieChartLabels.indexOf(this.dataset[x].client) == -1 )
+        if (labels.indexOf(incomingData[x].client) === -1 )
         {
-          this.pieChartLabels.push(this.dataset[x].client);
+          labels.push(incomingData[x].client);
         }
      }
+
+     return this.pieChartLabels = labels;
      
   }
  
