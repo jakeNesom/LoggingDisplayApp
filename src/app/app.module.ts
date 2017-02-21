@@ -11,7 +11,7 @@ import { InMemoryDataService } from './in-memory-data.service';
 
 import { AppComponent }  from './app.component';
 import { NavComponent }  from './nav.component';
-import { PieChart } from "./pieChart.component";
+import { SetChart } from "./pieChart.component";
 import { DisplayComponent } from "./display.component";
 import { LoggerService } from "./loggerdata.service";
 
@@ -26,7 +26,7 @@ import { LoggerService } from "./loggerdata.service";
   declarations: [ 
     AppComponent,
     NavComponent,
-    PieChart,
+    SetChart,
     DisplayComponent
     ],
   providers: [LoggerService],

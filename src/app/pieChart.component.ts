@@ -4,27 +4,71 @@ import { LoggerService } from './loggerdata.service';
 import { Dataset } from './definitions/dataset';
 
 
+
 @Component({
-  selector: 'piechart',
+  selector: 'setChart',
   templateUrl: 'app/views/piechart.html'  
   
 })
 
-export class PieChart {
+export class SetChart {
 
   public dataset:Dataset[] = [];
-  
   public clientTotals:any[] = [];
 
+ //Line Chart Datas
+ // lineChart
+   public lineChartData:Array<any> = [
+    {data: [65, 59, 80, 81 ], label: 'Client 1'},
+    {data: [28, 48, 40, 20], label: 'Client 2'},
+    {data: [18, 48, 77, 9 ], label: 'Client 3'}
+   ];
+
+  public lineChartLabels:Array<any> = ['30< min', '25< min', '15< min', '5< min'];
+  public lineChartOptions:any = {
+    responsive: true
+  };
+  public lineChartLegend:boolean = true;
+  public lineChartType:string = 'line';
+  
+  public lineChartColors:Array<any> = [
+    { // grey
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'rgba(148,159,177,1)',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    { // dark grey
+      backgroundColor: 'rgba(77,83,96,0.2)',
+      borderColor: 'rgba(77,83,96,1)',
+      pointBackgroundColor: 'rgba(77,83,96,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(77,83,96,1)'
+    },
+    { // grey
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'rgba(148,159,177,1)',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    }
+  ];
+
  
-  
-  public pieChartType:string = 'pie';
- 
-  // Pie from example
-  public pieChartLabels:string[] = ['Sac County', 'Calaveras Health Clinic', 'Client 3'];
-  public pieChartData:number[] = [300, 500, 100];
-  
-  
+  public randomize():void {
+    let _lineChartData:Array<any> = new Array(this.lineChartData.length);
+    for (let i = 0; i < this.lineChartData.length; i++) {
+      _lineChartData[i] = {data: new Array(this.lineChartData[i].data.length), label: this.lineChartData[i].label};
+      for (let j = 0; j < this.lineChartData[i].data.length; j++) {
+        _lineChartData[i].data[j] = Math.floor((Math.random() * 100) + 1);
+      }
+    }
+    this.lineChartData = _lineChartData;
+  }
   
   constructor (private loggerService: LoggerService ) {}
 
@@ -35,65 +79,66 @@ export class PieChart {
       .then(dataset => this.dataset = dataset );
       
     this.loggerService.getLoggerData()
-      .then(dataset => this.setLabels(dataset) );
+      .then(dataset => this.setData(dataset) );
 
    
   }
 
-  private setLabels(incomingData:any) {
+  private setData(incomingData:any) {
     
   
-    let labels:any = [];
+    let labels:any = {};
+    let clientTotals: any = {};
+
+    //create labels array which fills 'pieChartLables[]'
+    // create clientTotals object keys dynamically from current clients
      for(let x = 0; x < incomingData.length; x++)
      {
         if (labels.indexOf(incomingData[x].client) === -1 )
         {
           labels.push(incomingData[x].client);
+          clientTotals[labels[x]].total = 0;
         }
      }
-     return this.pieChartLabels = labels;
-     
+
+     for(let i = 0; i < labels.length; i ++)
+     {
+       clientTotals[labels[i]];
+     }
+
+
+     //count clientTotals
+     for(let i = 0; i < incomingData.length; i++) {
+       
+       //clientTotals[incomingData[i].client]++;
+     }
+
+    //set pieChartData 
+   
+    for(let i = 0; i < clientTotals.length; i++) {
+
+      //this.pieChartData[i] = clientTotals[i].total;
     }
 
+     //return this.lineChartLabels = labels;
+     return this.lineChartLabels;
+}
+ 
+ 
   // sets total logs received from each client
-  private setTotals(incomingData:any) {
+  private countClients(incomingData:any, labels:any) {
 
-      let totals:any[] = [];
-
-      for(let x = 0; x < incomingData.length; x++ )
-      if(totals.indexOf(incomingData[x].client) === -1)
-      {
-        totals.push(incomingData[x].client);
-        totals[incomingData[x].client] = 1;
-      }
-      else 
-      {
-          totals[incomingData[x].client]++;
-      }
-      
-      
-      return this.clientTotals = totals;
+     
   }
 
-  private setNumbersArray() 
-  {
-    let dataArray:any[] = [];
-
-    for( let i = 0; i < this.clientTotals.length; i++ )
-    {
-      dataArray[this.clientTotals[i]] = this.clientTotals[i];
-    }
-
-    return this.pieChartData = dataArray;
-  }
-
+  
   
  
  
  // Following functions come with pie chart example 
   public randomizeType():void {
-    this.lineChartType = this.lineChartType === 'line' ? 'bar' : 'line';
-    this.pieChartType = this.pieChartType === 'doughnut' ? 'pie' : 'doughnut';
+   
+    
   }
  
   public chartClicked(e:any):void {
