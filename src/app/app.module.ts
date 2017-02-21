@@ -12,7 +12,7 @@ import { InMemoryDataService } from './in-memory-data.service';
 import { AppComponent }  from './app.component';
 import { NavComponent }  from './nav.component';
 import { PieChart } from "./pieChart.component";
-import { OptionsComponent } from "./options.component";
+import { DisplayComponent } from "./display.component";
 import { LoggerService } from "./loggerdata.service";
 
 @NgModule({
@@ -27,7 +27,7 @@ import { LoggerService } from "./loggerdata.service";
     AppComponent,
     NavComponent,
     PieChart,
-    OptionsComponent
+    DisplayComponent
     ],
   providers: [LoggerService],
   bootstrap:    [ AppComponent ]

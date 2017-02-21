@@ -16,13 +16,8 @@ export class PieChart {
   
   public clientTotals:any[] = [];
 
-   // lineChart from example
-  public lineChartData:Array<any> = [
-    [65, 59, 80, 81, 56, 55, 40],
-    [28, 48, 40, 19, 86, 27, 90]
-  ];
-  public lineChartLabels:Array<any> = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-  public lineChartType:string = 'line';
+ 
+  
   public pieChartType:string = 'pie';
  
   // Pie from example
@@ -56,12 +51,9 @@ export class PieChart {
           labels.push(incomingData[x].client);
         }
      }
-
-     
-
      return this.pieChartLabels = labels;
      
-  }
+    }
 
   // sets total logs received from each client
   private setTotals(incomingData:any) {

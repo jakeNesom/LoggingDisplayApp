@@ -1,0 +1,21 @@
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'displayComponent',
+  templateUrl: `app/views/display.html`,
+  styleUrls: ['app/css/display.css']
+})
+
+export class DisplayComponent  { 
+
+
+  clientOptions:string [] = ["All", "client 1", "client 2", "client 3", "client 4"];
+  timeframe:string[] = ["All", "Last 30 min", "Last 5 min"];
+  
+    
+    //access a service component to populate client options list
+
+    //watch options menu for changes, execute functions based on which option selected
+
+    
+}
