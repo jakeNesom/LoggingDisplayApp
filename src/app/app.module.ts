@@ -11,7 +11,7 @@ import { InMemoryDataService } from './in-memory-data.service';
 
 import { AppComponent }  from './app.component';
 import { NavComponent }  from './nav.component';
-import { SetChart } from "./pieChart.component";
+import { SetChart } from "./setChart.component";
 import { DisplayComponent } from "./display.component";
 import { LoggerService } from "./loggerdata.service";
 
