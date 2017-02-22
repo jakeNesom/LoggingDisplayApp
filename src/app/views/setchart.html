@@ -1,20 +1,44 @@
-<div style="display:block; max-height:400px;">
-    <canvas  baseChart width="400" height="400"
-                [datasets]="lineChartData"
-                [labels]="lineChartLabels"
-                [options]="lineChartOptions"
-                [colors]="lineChartColors"
-                [legend]="lineChartLegend"
-                [chartType]="lineChartType"
-                (chartHover)="chartHovered($event)"
-                (chartClick)="chartClicked($event)"></canvas>
+<div class="col-sm-4 col-lg-4 col-sm-offset-0">
+      <div class="well" >
+               
+          
+
+          <div style="display:block;">
+              <canvas  baseChart width="400" height="400"
+                          [datasets]="lineChartData"
+                          [labels]="lineChartLabels"
+                          [options]="lineChartOptions"
+                          [colors]="lineChartColors"
+                          [legend]="lineChartLegend"
+                          [chartType]="lineChartType"
+                          (chartHover)="chartHovered($event)"
+                          (chartClick)="chartClicked($event)"></canvas>
+          </div>
+
+          <ul>
+            <li *ngFor="let record of dataset">Record #: {{record.id}} Client: {{record.client}} TimeStamp: {{record.time}}</li>
+          </ul> 
+
+          <ul>
+            <li *ngFor="let label of pieChartLabels"> Label: {{label}} </li>
+          </ul>
+     </div>
 </div>
-
-<ul>
-  <li *ngFor="let record of dataset">Record #: {{record.id}} Client: {{record.client}} TimeStamp: {{record.time}}</li>
-</ul> 
-
-<ul>
-  <li *ngFor="let label of pieChartLabels"> Label: {{label}} </li>
-</ul>
+<div class="col-sm-4 col-lg-4">
+     <div class="well">
+        <div>
+          <div style="display: block">
+            <canvas baseChart
+                    [datasets]="barChartData"
+                    [labels]="barChartLabels"
+                    [options]="barChartOptions"
+                    [legend]="barChartLegend"
+                    [chartType]="barChartType"
+                    (chartHover)="barChartHovered($event)"
+                    (chartClick)="barChartClicked($event)"></canvas>
+          </div>
+          <button (click)="barChartRandomize()">Update</button>
+        </div>
+     </div> <!-- end of well -->
+</div>
 

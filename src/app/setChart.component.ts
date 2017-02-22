@@ -16,10 +16,8 @@ export class SetChart {
   //incoming data from loggingService Get request
   public dataset:Dataset[] = [];
 
-  //filled in with example
-  public clientTotals:any[] = [ {client: "clientName", total:"total logs"}];
-
-
+  //public clientTotals:any[] = [];
+  public clientTotals = {};
 
  //Line Chart Data from http://valor-software.com/ng2-charts/ using chart.js and ng-2charts plugins
    public lineChartData:Array<any> = [
@@ -29,18 +27,30 @@ export class SetChart {
    ];
 
   //public lineChartLabels:Array<any> = ['30< min', '25< min', '15< min', '5< min'];
-  
   public lineChartType:string = 'line';
   public lineChartOptions:any = {
     responsive: true,
-    maintainAspectRatio: false
+    maintainAspectRatio: true
   };
   public lineChartLegend:boolean = true;
   
   
+  /** Bar Chart Variables  */
 
-
+  public barChartOptions:any = {
+    scaleShowVerticalLines: false,
+    responsive: true
+  };
+  public barChartLabels:string[] = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
+  public barChartType:string = 'bar';
+  public barChartLegend:boolean = true;
  
+  public barChartData:any[] = [
+    {data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A'},
+    {data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B'}
+  ];
+ 
+  
   // creating instance of LoggerService
   constructor (private loggerService: LoggerService ) {}
 
@@ -56,29 +66,16 @@ export class SetChart {
    
   }
 
-  private setData(incomingData:any) {
+  private setData(incomingData:any):void {
     
   
-    let labels:Array<any> = [];
-
-    interface ClientTotals {
-      
-        client: string,
-        total: number,
-        intervalTotal?: {
-            "30+": number,
-            "15-30": number,
-            "5-15": number,
-            ">5": number
-        }
-      
-    }
-    let clientTotals: ClientTotals[] = [];
-    let iter = 0;
+    let labels:any = [];
+  
     //create labels array which fills 'pieChartLables[]'
     // create clientTotals object keys dynamically from current clients
      for(let x = 0; x < incomingData.length; x++)
      {
+      
         if (labels.indexOf(incomingData[x].client) === -1 )
         {
           labels.push(incomingData[x].client);
@@ -86,34 +83,55 @@ export class SetChart {
         }
      }
 
-     for(let i = 0; i < labels.length; i ++)
-     {
-       clientTotals[i].client = labels[i];
-     }
+     this.barChartLabels = labels;
 
-
-     //count clientTotals
-     for(let i = 0; i < incomingData.length; i++) {
-       
-       //clientTotals[incomingData[i].client]++;
-     }
-
-    //set pieChartData 
-   
-    for(let i = 0; i < clientTotals.length; i++) {
-
-      //this.pieChartData[i] = clientTotals[i].total;
-    }
-
+     this.countClients(incomingData, labels);
+    
      //return this.lineChartLabels = labels;
-     return this.lineChartData;
+    
 }
  
  
-  // sets total logs received from each client
-  private countClients(incomingData:any, labels:any) {
+  
+  private countClients(incomingData:any, labels:any):void {
+
+    for(let i = 0; i < labels.length; i++)
+    {
+      this.clientTotals[labels[i]] = {};
+      this.clientTotals[labels[i]]["total"] = 0;
+    }
+
+    // populate client section of clientTotals array & initialize 'total' property value
+     
+
+   
+       for(let j = 0; j < incomingData.length; j++)
+       {
+         if(incomingData[j].client in this.clientTotals && this.clientTotals.hasOwnProperty(incomingData[j]["total"]))
+         {
+           this.clientTotals[incomingData[j]]["total"] += 1;
+         }
+       }
+    
+
+     this.setBarChartData();
 
      
+  }
+
+  private setBarChartData (): void {
+  
+    // get clientTotals associative array length
+    // copy data to barChartData array
+    let size = 0;
+    for (let key in this.clientTotals)
+    {
+       this.barChartData = [];
+       this.barChartData[size]["label"] = key;
+       this.barChartData[size]["data"] = key["total"];
+       size++;
+    }  
+    
   }
 
   
@@ -139,5 +157,35 @@ export class SetChart {
  
   public chartHovered(e:any):void {
     console.log(e);
+  }
+
+  // events
+  public barChartClicked(e:any):void {
+    console.log(e);
+  }
+ 
+  public barChartHovered(e:any):void {
+    console.log(e);
+  }
+ 
+  public barChartRandomize():void {
+    // Only Change 3 values
+    let data = [
+      Math.round(Math.random() * 100),
+      59,
+      80,
+      (Math.random() * 100),
+      56,
+      (Math.random() * 100),
+      40];
+    let clone = JSON.parse(JSON.stringify(this.barChartData));
+    clone[0].data = data;
+    this.barChartData = clone;
+    /**
+     * (My guess), for Angular to recognize the change in the dataset
+     * it has to change the dataset variable directly,
+     * so one way around it, is to clone the data, change it and then
+     * assign it;
+     */
   }
 }
