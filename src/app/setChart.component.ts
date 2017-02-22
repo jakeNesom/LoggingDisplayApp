@@ -127,6 +127,7 @@ export class SetChart {
     for (let key in this.clientTotals)
     {
        this.barChartData = [];
+       this.barChartData[size] = {};
        this.barChartData[size]["label"] = key;
        this.barChartData[size]["data"] = key["total"];
        size++;
