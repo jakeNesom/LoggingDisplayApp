@@ -15,13 +15,7 @@
                           (chartClick)="chartClicked($event)"></canvas>
           </div>
 
-          <ul>
-            <li *ngFor="let record of dataset">Record #: {{record.id}} Client: {{record.client}} TimeStamp: {{record.time}}</li>
-          </ul> 
-
-          <ul>
-            <li *ngFor="let label of pieChartLabels"> Label: {{label}} </li>
-          </ul>
+         
      </div>
 </div>
 <div class="col-sm-4 col-lg-4">
@@ -40,5 +34,14 @@
           <button (click)="barChartRandomize()">Update</button>
         </div>
      </div> <!-- end of well -->
+     <div class="well">
+          <ul>
+            <li *ngFor="let record of dataset">Record #: {{record.id}} Client: {{record.client}} TimeStamp: {{record.time}}</li>
+          </ul> 
+
+          <ul>
+            <li *ngFor="let label of pieChartLabels"> Label: {{label}} </li>
+          </ul>
+     </div>
 </div>
 

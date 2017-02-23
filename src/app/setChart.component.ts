@@ -17,7 +17,7 @@ export class SetChart {
   public dataset:Dataset[] = [];
 
   //public clientTotals:any[] = [];
-  public clientTotals = {};
+  public clientTotals:any = {};
 
  //Line Chart Data from http://valor-software.com/ng2-charts/ using chart.js and ng-2charts plugins
    public lineChartData:Array<any> = [
@@ -81,10 +81,10 @@ export class SetChart {
           labels.push(incomingData[x].client);
           
         }
-     }
-
+      }
+     this.barChartLabels = [];
      this.barChartLabels = labels;
-
+     console.log(this.barChartLabels);
      this.countClients(incomingData, labels);
     
      //return this.lineChartLabels = labels;
@@ -104,14 +104,23 @@ export class SetChart {
     // populate client section of clientTotals array & initialize 'total' property value
      
 
-   
-       for(let j = 0; j < incomingData.length; j++)
-       {
-         if(incomingData[j].client in this.clientTotals && this.clientTotals.hasOwnProperty(incomingData[j]["total"]))
-         {
-           this.clientTotals[incomingData[j]]["total"] += 1;
-         }
-       }
+    for(let key in this.clientTotals)
+    {
+      for(let i = 0; i < incomingData.length; i++ )
+      {
+        if ( key == incomingData[i].client)
+        {
+          this.clientTotals[key]["total"]++;
+        }
+      }
+     }
+      //  for(let j = 0; j < incomingData.length; j++)
+      //  {
+      //    if(incomingData[j].client in this.clientTotals && this.clientTotals.hasOwnProperty(incomingData[j]["total"]))
+      //    {
+      //      this.clientTotals[incomingData[j]]["total"] += 1;
+      //    }
+      //  }
     
 
      this.setBarChartData();
@@ -123,13 +132,14 @@ export class SetChart {
   
     // get clientTotals associative array length
     // copy data to barChartData array
+    this.barChartData = [];
     let size = 0;
     for (let key in this.clientTotals)
     {
-       this.barChartData = [];
+      
        this.barChartData[size] = {};
        this.barChartData[size]["label"] = key;
-       this.barChartData[size]["data"] = key["total"];
+       this.barChartData[size]["data"] = this.clientTotals[key]["total"];
        size++;
     }  
     
