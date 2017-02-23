@@ -5,6 +5,6 @@
       "/node_modules": "node_modules"
     }
   },
-  "browser": ["chrome"],
-  "port": 3031
+  "browser": ["google chrome"],
+  "port": 3035
 }
