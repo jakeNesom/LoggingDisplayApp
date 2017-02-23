@@ -1,17 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, PipeTransform, Pipe} from '@angular/core';
+import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import { LoggerService } from './loggerdata.service';
 
 import { Dataset } from './definitions/dataset';
-
+import { BaseChartDirective } from 'ng2-charts/ng2-charts';
 
 
 @Component({
   selector: 'setChart',
-  templateUrl: 'app/views/setchart.html'  
-  
+  templateUrl: 'app/views/setchart.html',  
 })
 
 export class SetChart {
+
+  // //public barChartString:any = "<canvas baseChart" +
+  //                   "[datasets]='barChartData'" +
+  //                   "[labels]='barChartLabels'" +
+  //                   "[options]='barChartOptions'" +
+  //                   "[legend]='barChartLegend'" +
+  //                   "[chartType]='barChartType'" +
+  //                   "(chartHover)='barChartHovered($event)'" +
+  //                   "(chartClick)='barChartClicked($event)'></canvas>";
 
   //incoming data from loggingService Get request
   public dataset:Dataset[] = [];
@@ -41,29 +50,39 @@ export class SetChart {
     scaleShowVerticalLines: false,
     responsive: true
   };
-  public barChartLabels:string[] = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
+  public barChartLabels:string[] = ['Clients'];
   public barChartType:string = 'bar';
   public barChartLegend:boolean = true;
  
   public barChartData:any[] = [
-    {data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A'},
-    {data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B'}
-  ];
+    {data: ["3"], label:"Client 1"},
+    {data: ["2"], label:"Client 2"},
+    {data: ["5"], label:"Client 5"},
+    {data: ["4"], label:"Client 7"}
+    
+    ];
+
  
   
-  // creating instance of LoggerService
-  constructor (private loggerService: LoggerService ) {}
+  
 
+  // creating instance of LoggerService
+  constructor (private loggerService: LoggerService, private sanitizer: DomSanitizer) {}
+ 
 
   ngOnInit(): void {
 
     this.loggerService.getLoggerData()
       .then(dataset => this.dataset = dataset );
-      
+
+    this.loggerService.getLoggerData()
+      .then(dataset => this.setData(dataset) );
+  }
+
+  public updateData() {
     this.loggerService.getLoggerData()
       .then(dataset => this.setData(dataset) );
 
-   
   }
 
   private setData(incomingData:any):void {
@@ -82,11 +101,13 @@ export class SetChart {
           
         }
       }
-     this.barChartLabels = [];
-     this.barChartLabels = labels;
+     
+     
      console.log(this.barChartLabels);
      this.countClients(incomingData, labels);
-    
+    // @ViewChild("canvas basechart") 
+    // private let _chart;
+    // _chart.ngOnChanges()
      //return this.lineChartLabels = labels;
     
 }
@@ -126,8 +147,10 @@ export class SetChart {
      this.setBarChartData();
 
      
+     
   }
 
+  
   private setBarChartData (): void {
   
     // get clientTotals associative array length
@@ -139,9 +162,15 @@ export class SetChart {
       
        this.barChartData[size] = {};
        this.barChartData[size]["label"] = key;
-       this.barChartData[size]["data"] = this.clientTotals[key]["total"];
+       this.barChartData[size]["data"] = [];
+       this.barChartData[size]["data"][0] = this.clientTotals[key]["total"];
        size++;
     }  
+
+    this.barChartData = this.barChartData.slice();
+    
+
+    
     
   }
 

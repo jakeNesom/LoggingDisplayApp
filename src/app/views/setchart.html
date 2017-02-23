@@ -31,17 +31,17 @@
                     (chartHover)="barChartHovered($event)"
                     (chartClick)="barChartClicked($event)"></canvas>
           </div>
-          <button (click)="barChartRandomize()">Update</button>
+          <button (click)="updateData()">Update Data</button>
         </div>
      </div> <!-- end of well -->
      <div class="well">
+          
+          
           <ul>
             <li *ngFor="let record of dataset">Record #: {{record.id}} Client: {{record.client}} TimeStamp: {{record.time}}</li>
           </ul> 
 
-          <ul>
-            <li *ngFor="let label of pieChartLabels"> Label: {{label}} </li>
-          </ul>
+         
      </div>
 </div>
 
