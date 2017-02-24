@@ -1,4 +1,5 @@
-import { Component, OnInit, PipeTransform, Pipe, Input, OnChanges, SimpleChange } from '@angular/core';
+import { Component, OnInit, PipeTransform, Pipe, Input, OnChanges, SimpleChange,
+        Output, EventEmitter, ChangeDetectionStrategy, ElementRef} from '@angular/core';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import { LoggerService } from './loggerdata.service';
 
@@ -6,6 +7,8 @@ import { Dataset } from './definitions/dataset';
 import { BaseChartDirective } from 'ng2-charts/ng2-charts';
 
 
+//ng on changes
+//http://stackoverflow.com/questions/35823698/how-to-make-ngonchanges-work-in-angular2
 
 @Component({
   selector: 'setChart',
