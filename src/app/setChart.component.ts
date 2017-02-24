@@ -1,4 +1,4 @@
-import { Component, OnInit, PipeTransform, Pipe} from '@angular/core';
+import { Component, OnInit, PipeTransform, Pipe, Input, OnChanges, SimpleChange } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import { LoggerService } from './loggerdata.service';
 
@@ -6,21 +6,35 @@ import { Dataset } from './definitions/dataset';
 import { BaseChartDirective } from 'ng2-charts/ng2-charts';
 
 
+
 @Component({
   selector: 'setChart',
   templateUrl: 'app/views/setchart.html',  
 })
 
-export class SetChart {
+export class SetChart implements OnChanges {
+ 
+ 
+  @Input() allData: any;
+  changeLog:string[] = [];
+  
 
-  // //public barChartString:any = "<canvas baseChart" +
-  //                   "[datasets]='barChartData'" +
-  //                   "[labels]='barChartLabels'" +
-  //                   "[options]='barChartOptions'" +
-  //                   "[legend]='barChartLegend'" +
-  //                   "[chartType]='barChartType'" +
-  //                   "(chartHover)='barChartHovered($event)'" +
-  //                   "(chartClick)='barChartClicked($event)'></canvas>";
+  ngOnChanges(changes: {[propkey: string]: SimpleChange}) {
+    let log:string[] = [];
+
+    for(let propName in changes) {
+      let changedProp = changes[propName];
+      let to = JSON.stringify(changedProp.currentValue);
+      if(changedProp.isFirstChange()) {
+        log.push("initial value of ${propName} set to ${to}");
+      }else {
+        let from = JSON.stringify(changedProp.previousValue);
+        log.push('${propName} changed from ${from} to ${to}');
+      }
+    }
+      this.changeLog.push(log.join(', '));
+      console.log(this.changeLog);
+  }
 
   //incoming data from loggingService Get request
   public dataset:Dataset[] = [];
