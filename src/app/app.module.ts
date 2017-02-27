@@ -30,6 +30,7 @@ import { LoggerService } from "./loggerdata.service";
     DisplayComponent
     ],
   providers: [LoggerService],
-  bootstrap:    [ AppComponent ]
+  bootstrap:    [ AppComponent ],
+  
 })
 export class AppModule { }

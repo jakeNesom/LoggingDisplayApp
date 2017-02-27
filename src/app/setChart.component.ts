@@ -5,7 +5,7 @@ import { LoggerService } from './loggerdata.service';
 
 import { Dataset } from './definitions/dataset';
 import { BaseChartDirective } from 'ng2-charts/ng2-charts';
-
+import { DisplayComponent } from './display.component';
 
 //ng on changes
 //http://stackoverflow.com/questions/35823698/how-to-make-ngonchanges-work-in-angular2
@@ -15,35 +15,41 @@ import { BaseChartDirective } from 'ng2-charts/ng2-charts';
   templateUrl: 'app/views/setchart.html',  
 })
 
-export class SetChart implements OnChanges {
+export class SetChart {
  
  
-  @Input() allData: any;
-  changeLog:string[] = [];
-  
+  @Input() currentClientC: string;
 
-  ngOnChanges(changes: {[propkey: string]: SimpleChange}) {
-    let log:string[] = [];
+  @Input() currentNodeC: string;
+ 
+  @Input() timeFilterC: string;
 
-    for(let propName in changes) {
-      let changedProp = changes[propName];
-      let to = JSON.stringify(changedProp.currentValue);
-      if(changedProp.isFirstChange()) {
-        log.push("initial value of ${propName} set to ${to}");
-      }else {
-        let from = JSON.stringify(changedProp.previousValue);
-        log.push('${propName} changed from ${from} to ${to}');
-      }
+  ngOnChanges(changes: any []) {
+    console.log("onChange fired");
+    console.log("changing", changes);
+
+    for (let key in changes)
+    {
+      if(key == "currentClientC") { this.filters.client = this.currentClientC; }
+      if(key == "currentNodeC") { this.filters.node = this.currentNodeC; }
+      if(key == "timeFilterC") { this.filters.time = this.timeFilterC; }
     }
-      this.changeLog.push(log.join(', '));
-      console.log(this.changeLog);
-  }
 
+
+    
+  }
   //incoming data from loggingService Get request
   public dataset:Dataset[] = [];
 
   //public clientTotals:any[] = [];
   public clientTotals:any = {};
+
+  public filters:any = {client:"ANY", node:"ANY", time:"ANY"};
+  public clientLabels: any = [];
+  public nodeLabels: any = []
+  
+  // variable toggles activelyLook() to stop the repeating get requests
+  public activelyLookForData: boolean = true;
 
  //Line Chart Data from http://valor-software.com/ng2-charts/ using chart.js and ng-2charts plugins
    public lineChartData:Array<any> = [
@@ -67,15 +73,15 @@ export class SetChart implements OnChanges {
     scaleShowVerticalLines: false,
     responsive: true
   };
-  public barChartLabels:string[] = ['Clients'];
+  public barChartLabels:string[] = ['Node1', "Node2", "Node5"];
   public barChartType:string = 'bar';
   public barChartLegend:boolean = true;
  
   public barChartData:any[] = [
-    {data: ["3"], label:"Client 1"},
-    {data: ["2"], label:"Client 2"},
-    {data: ["5"], label:"Client 5"},
-    {data: ["4"], label:"Client 7"}
+    {data: ["3", "2"], label:"Node 1"},
+    {data: ["2", "1"], label:"Node 2"},
+    {data: ["5", "2"], label:"Node 5"}
+    
     
     ];
 
@@ -93,78 +99,123 @@ export class SetChart implements OnChanges {
       .then(dataset => this.dataset = dataset );
 
     this.loggerService.getLoggerData()
-      .then(dataset => this.setData(dataset) );
+      .then( dataset => this.setData(dataset) );
   }
 
-  public updateData() {
-    this.loggerService.getLoggerData()
-      .then(dataset => this.setData(dataset) );
-
-  }
-
-  private setData(incomingData:any):void {
+  public lookForNewData() {
     
-  
-    let labels:any = [];
-  
+
+    while(this.activelyLookForData = true)
+    {
+        setTimeout(function() { 
+          let newData:any;
+         
+          this.loggerService.getLoggerData()
+          .then( (data:any) => newData = data );
+
+          if(newData !== this.dataset) { this.dataset = newData;}
+      }, 8000);
+    }
+    
+
+  }
+
+  private setData(incomingData:any, filter?:any ):void {
+     this.dataset = incomingData;
+     this.dataset = this.dataset.slice();
+
+     this.nodeFilter();
+     this.setClientLabels(this.dataset);
+     this.setNodeLabels(this.dataset);
+     this.countClients(this.dataset);
+     this.setBarChartData();
+    
+}
+
+private setClientLabels(incomingData:any) {
+  let labels:any = [];
     //create labels array which fills 'pieChartLables[]'
-    // create clientTotals object keys dynamically from current clients
      for(let x = 0; x < incomingData.length; x++)
      {
-      
         if (labels.indexOf(incomingData[x].client) === -1 )
         {
           labels.push(incomingData[x].client);
-          
         }
       }
-     
-     
-     console.log(this.barChartLabels);
-     this.countClients(incomingData, labels);
-    // @ViewChild("canvas basechart") 
-    // private let _chart;
-    // _chart.ngOnChanges()
-     //return this.lineChartLabels = labels;
-    
+
+    this.clientLabels = labels;
+    this.clientLabels = this.clientLabels.slice();
+}
+
+private setNodeLabels(incomingData:any) {
+  let labels:any = [];
+    //create labels array which fills 'pieChartLables[]'
+     for(let x = 0; x < incomingData.length; x++)
+     {
+        if (labels.indexOf(incomingData[x].node) === -1 )
+        {
+          labels.push(incomingData[x].node);
+        }
+      }
+
+    this.nodeLabels = labels;
+    this.nodeLabels = this.nodeLabels.slice();
 }
  
- 
   
-  private countClients(incomingData:any, labels:any):void {
+  private countClients(incomingData:any, filter?: any):void {
+    let clabels:any =  [];
+    let nlabels:any = [];
+    clabels = this.clientLabels;
+    nlabels = this.nodeLabels;
 
-    for(let i = 0; i < labels.length; i++)
+    for(let h = 0; h < clabels.length; h++ )
     {
-      this.clientTotals[labels[i]] = {};
-      this.clientTotals[labels[i]]["total"] = 0;
+      this.clientTotals[clabels[h]] = {};
+    
+      for(let i = 0; i < nlabels.length; i++)
+      {
+        this.clientTotals[clabels[h]][nlabels[i]] = {};
+        this.clientTotals[clabels[h]][nlabels[i]]["total"] = 0;
+      }
     }
 
-    // populate client section of clientTotals array & initialize 'total' property value
-     
 
-    for(let key in this.clientTotals)
+    // populate client section of clientTotals array & initialize 'total' property value
+    
+    for(let i = 0; i < this.nodeLabels.length; i++)
     {
+      this.barChartLabels[i] = this.nodeLabels[i];
+    }
+
+
+    // for each present Client
+    let size = 0;
+    for(let client in this.clientTotals)
+    {
+      
+      //cycle through every array property
       for(let i = 0; i < incomingData.length; i++ )
       {
-        if ( key == incomingData[i].client)
+        // if one of the array properties matches this client
+        if ( client == incomingData[i].client)
         {
-          this.clientTotals[key]["total"]++;
+          //cycle through each node for that client
+          for(let node in this.clientTotals[client])
+          {
+            // if if one of the nodes matches the incoming data array nodes
+            if( node == incomingData[i].node) 
+            {
+              // incrememnt the 'total' property of clienttotals.thisclient.thisnode.total
+              this.clientTotals[client][node]["total"]++;
+            }
+          } 
         }
       }
+      size++;
+
      }
-      //  for(let j = 0; j < incomingData.length; j++)
-      //  {
-      //    if(incomingData[j].client in this.clientTotals && this.clientTotals.hasOwnProperty(incomingData[j]["total"]))
-      //    {
-      //      this.clientTotals[incomingData[j]]["total"] += 1;
-      //    }
-      //  }
-    
-
-     this.setBarChartData();
-
-     
-     
+   
   }
 
   
@@ -172,30 +223,57 @@ export class SetChart implements OnChanges {
   
     // get clientTotals associative array length
     // copy data to barChartData array
-    this.barChartData = [];
-    let size = 0;
-    for (let key in this.clientTotals)
-    {
-      
-       this.barChartData[size] = {};
-       this.barChartData[size]["label"] = key;
-       this.barChartData[size]["data"] = [];
-       this.barChartData[size]["data"][0] = this.clientTotals[key]["total"];
-       size++;
-    }  
-
-    this.barChartData = this.barChartData.slice();
-    
-
-    
-    
+      let barChartData = [];
+      let size = 0;
+      for (let client in this.clientTotals)
+      {
+        let dataSize = 0;
+        barChartData[size] = {};
+        
+        barChartData[size]["data"] = [];
+        barChartData[size]["label"] = client;
+        for( let node in this.clientTotals[client])
+        {
+          
+          barChartData[size]["data"][dataSize] = 0;
+          barChartData[size]["data"][dataSize] = this.clientTotals[client][node]["total"];
+          dataSize++;
+        }
+        
+        size++;
+      }  
+      this.barChartData = barChartData;
+      this.barChartData = this.barChartData.slice();
   }
+     
+  private timeFilter () {
 
-  
-  
+  }
+  private nodeFilter () {
+
+    if(this.filters.node != "ALL")
+    {
+
+       
+
+    }
+  }
  
  
- // Following functions come with pie chart example 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ // THE FOLLOWING FUNCTIONS ARE LEFTOVER FROM THE ng2-charts examples I used to create this Component, none are being used
 
   public randomize():void {
     let _lineChartData:Array<any> = new Array(this.lineChartData.length);

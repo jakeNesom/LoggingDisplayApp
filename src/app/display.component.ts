@@ -1,4 +1,4 @@
-import { Component, OnInit, PipeTransform, Pipe, AfterContentInit, DoCheck} from '@angular/core';
+import { Input, Component, OnInit, PipeTransform, Pipe, AfterContentInit, DoCheck} from '@angular/core';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import { LoggerService } from './loggerdata.service';
 
@@ -9,8 +9,12 @@ import { BaseChartDirective } from 'ng2-charts/ng2-charts';
 @Component({
   selector: 'displayComponent',
   templateUrl: `app/views/display.html`,
-  styleUrls: ['app/css/display.css']
+  styleUrls: ['app/css/display.css'],
+  
+  
 })
+
+
 
 export class DisplayComponent  { 
 
@@ -31,8 +35,7 @@ export class DisplayComponent  {
   public currentNode = "All";
   public timeFilter = "ALL";
 
-
-
+  
   public allData = {
     clientTotals:<any>[{client: "", total: ""}],
     clientList: <any> [],
@@ -43,6 +46,8 @@ export class DisplayComponent  {
     timeFilter: "ALL",
 
   }
+
+  public filterArray: string[] = [this.allData.currentClient, this.allData.currentNode, this.allData.timeFilter];
 
   constructor (private loggerService: LoggerService) {}
 
@@ -74,10 +79,12 @@ export class DisplayComponent  {
   {
     
      let items:any = [];
+     items.push("ALL");
     //create labels array which fills 'pieChartLables[]'
     // create clientTotals object keys dynamically from current clients
      for(let x = 0; x < this.dataset.length; x++)
      {
+       
       
         if (items.indexOf(this.dataset[x].client) === -1 )
         {
@@ -93,6 +100,7 @@ export class DisplayComponent  {
   {
     
      let items:any = [];
+     items.push("ALL");
     //create labels array which fills 'pieChartLables[]'
     // create clientTotals object keys dynamically from current clients
      for(let x = 0; x < this.dataset.length; x++)
@@ -111,19 +119,21 @@ export class DisplayComponent  {
   clientChange(value:string)
   {
     this.allData.currentClient = value;
-
+    this.currentClient = value;
     console.log(this.allData.currentClient);
   }
 
   nodeChange(value:string)
   {
     this.allData.currentNode = value;
+    this.currentNode = value;
     console.log(this.allData.currentNode);
   }
 
   timeChange(value:string)
   {
     this.allData.timeFilter = value;
+    this.timeFilter = value;
     console.log(this.allData.timeFilter);
   }
 
