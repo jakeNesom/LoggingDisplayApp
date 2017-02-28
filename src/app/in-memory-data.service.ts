@@ -17,7 +17,9 @@ export class InMemoryDataService implements InMemoryDbService {
             {id: 7, client: "Client 1", time: "12:33:00", node: "Node 3"},
             {id: 8, client: "Client 4", time: "12:29:00", node: "Node 2"},
             {id: 9, client: "Client 3", time: "12:16:00", node: "Node 1"},
-            {id: 10, client: "Client 1", time: "12:20:00", node: "Node 2"}
+            {id: 10, client: "Client 1", time: "12:20:00", node: "Node 2"},
+            {id: 11, client: "Client 4", time: "12:21:00", node: "Node 3"},
+            {id: 12, client: "Client 6", time: "12:22:00", node: "Node 4"},
             
         ];
     

@@ -1,10 +1,10 @@
 import { Component, OnInit, PipeTransform, Pipe, Input, OnChanges, SimpleChange,
-        Output, EventEmitter, ChangeDetectionStrategy, ElementRef} from '@angular/core';
+        Output, EventEmitter, ChangeDetectionStrategy, ElementRef, ViewChild} from '@angular/core';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import { LoggerService } from './loggerdata.service';
 
 import { Dataset } from './definitions/dataset';
-import { BaseChartDirective } from 'ng2-charts/ng2-charts';
+import { BaseChartDirective,   } from 'ng2-charts';
 import { DisplayComponent } from './display.component';
 
 //ng on changes
@@ -17,7 +17,9 @@ import { DisplayComponent } from './display.component';
 
 export class SetChart {
  
- 
+  @ViewChild(BaseChartDirective)
+  public chart: BaseChartDirective;
+
   @Input() currentClientC: string;
 
   @Input() currentNodeC: string;
@@ -73,14 +75,17 @@ export class SetChart {
     scaleShowVerticalLines: false,
     responsive: true
   };
-  public barChartLabels:string[] = ['Node1', "Node2", "Node5"];
+  public barChartLabels:string[] = ['NodeA', "NodeB", "NodeC"];
   public barChartType:string = 'bar';
   public barChartLegend:boolean = true;
  
   public barChartData:any[] = [
-    {data: ["3", "2"], label:"Node 1"},
-    {data: ["2", "1"], label:"Node 2"},
-    {data: ["5", "2"], label:"Node 5"}
+    {data: ["3", "2"], label:"Client A"},
+    {data: ["2", "1"], label:"Client B"},
+    {data: ["5", "2"], label:"Client C"},
+    {data: ["5", "2"], label:"Client D"},
+    {data: ["5", "2"], label:"Client E"},
+    {data: ["5", "2"], label:"Client F"},
     
     
     ];
@@ -121,14 +126,17 @@ export class SetChart {
   }
 
   private setData(incomingData:any, filter?:any ):void {
+     
      this.dataset = incomingData;
      this.dataset = this.dataset.slice();
 
      this.nodeFilter();
      this.setClientLabels(this.dataset);
+     this.removeExtraLabels();
      this.setNodeLabels(this.dataset);
-     this.countClients(this.dataset);
+     this.countAllClientsNodes(this.dataset);
      this.setBarChartData();
+     
     
 }
 
@@ -144,7 +152,23 @@ private setClientLabels(incomingData:any) {
       }
 
     this.clientLabels = labels;
-    this.clientLabels = this.clientLabels.slice();
+    
+    
+}
+
+// right now ng-2 charts only refreshes data when a label from the barChartData[x].label value has changed
+// 
+private removeExtraLabels()
+{
+  if (this.barChartData.length > this.clientLabels.length) 
+  {
+    let extra = this.barChartData.length - this.clientLabels.length;
+    let length = this.clientLabels.length;
+
+    this.barChartData.splice(length,extra);
+    this.barChartData = this.barChartData.slice();
+  }
+
 }
 
 private setNodeLabels(incomingData:any) {
@@ -163,7 +187,7 @@ private setNodeLabels(incomingData:any) {
 }
  
   
-  private countClients(incomingData:any, filter?: any):void {
+  private countAllClientsNodes(incomingData:any, filter?: any):void {
     let clabels:any =  [];
     let nlabels:any = [];
     clabels = this.clientLabels;
@@ -220,29 +244,38 @@ private setNodeLabels(incomingData:any) {
 
   
   private setBarChartData (): void {
-  
+      // Initialize barChartData object array
+      // -- if you don't initialize the array with the number of objects it will contain,
+      // the data won't show up correctly
+     //this.barChartData = new Array(this.clientLabels.length-1);
+      
+
+
+    
+
+
+
     // get clientTotals associative array length
     // copy data to barChartData array
-      let barChartData = [];
+      
       let size = 0;
       for (let client in this.clientTotals)
       {
         let dataSize = 0;
-        barChartData[size] = {};
-        
-        barChartData[size]["data"] = [];
-        barChartData[size]["label"] = client;
+        this.barChartData[size] = {};
+        this.barChartData[size]["label"] = client;
+        this.barChartData[size]["data"] = [];
         for( let node in this.clientTotals[client])
         {
           
-          barChartData[size]["data"][dataSize] = 0;
-          barChartData[size]["data"][dataSize] = this.clientTotals[client][node]["total"];
+          this.barChartData[size]["data"][dataSize] = 0;
+          this.barChartData[size]["data"][dataSize] = this.clientTotals[client][node]["total"];
           dataSize++;
         }
         
         size++;
       }  
-      this.barChartData = barChartData;
+      
       this.barChartData = this.barChartData.slice();
   }
      
