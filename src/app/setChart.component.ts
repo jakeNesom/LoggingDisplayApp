@@ -1,10 +1,11 @@
 import { Component, OnInit, PipeTransform, Pipe, Input, OnChanges, SimpleChange,
         Output, EventEmitter, ChangeDetectionStrategy, ElementRef, ViewChild} from '@angular/core';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
-import { LoggerService } from './loggerdata.service';
+import { ApplicationRef } from '@angular/core';
 
+import { LoggerService } from './loggerdata.service';
 import { Dataset } from './definitions/dataset';
-import { BaseChartDirective,   } from 'ng2-charts';
+import { BaseChartDirective, ChartsModule  } from 'ng2-charts';
 import { DisplayComponent } from './display.component';
 
 //ng on changes
@@ -95,7 +96,7 @@ export class SetChart {
   
 
   // creating instance of LoggerService
-  constructor (private loggerService: LoggerService, private sanitizer: DomSanitizer) {}
+  constructor (private loggerService: LoggerService, private sanitizer: DomSanitizer, private _applicationRef: ApplicationRef) {}
  
 
   ngOnInit(): void {
@@ -132,11 +133,11 @@ export class SetChart {
 
      this.nodeFilter();
      this.setClientLabels(this.dataset);
-     this.removeExtraLabels();
+     //this.removeExtraLabels();
      this.setNodeLabels(this.dataset);
      this.countAllClientsNodes(this.dataset);
      this.setBarChartData();
-     
+     this.updateData();
     
 }
 
@@ -156,6 +157,7 @@ private setClientLabels(incomingData:any) {
     
 }
 
+
 // right now ng-2 charts only refreshes data when a label from the barChartData[x].label value has changed
 // 
 private removeExtraLabels()
@@ -165,7 +167,7 @@ private removeExtraLabels()
     let extra = this.barChartData.length - this.clientLabels.length;
     let length = this.clientLabels.length;
 
-    this.barChartData.splice(length,extra);
+    this.barChartData.splice(5,1);
     this.barChartData = this.barChartData.slice();
   }
 
@@ -292,6 +294,12 @@ private setNodeLabels(incomingData:any) {
     }
   }
  
+
+public updateData () {
+  
+  this._applicationRef.tick();
+  
+}
  
 
 
