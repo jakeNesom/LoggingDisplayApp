@@ -126,11 +126,11 @@ export class SetChart {
 
   }
 
-  private setData(incomingData:any, filter?:any ):void {
-     
-     this.dataset = incomingData;
-     this.dataset = this.dataset.slice();
-
+  private setData(incomingData?:any, filter?:any ):void {
+     if(incomingData) {
+        this.dataset = incomingData;
+        this.dataset = this.dataset.slice();
+     }
      this.nodeFilter();
      this.setClientLabels(this.dataset);
      //this.removeExtraLabels();
@@ -297,7 +297,7 @@ private setNodeLabels(incomingData:any) {
 
 public updateData () {
   
-  this._applicationRef.tick();
+  this.setData();
   
 }
  
