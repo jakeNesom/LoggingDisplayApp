@@ -5,22 +5,20 @@ import { ApplicationRef } from '@angular/core';
 
 import { LoggerService } from './loggerdata.service';
 import { Dataset } from './definitions/dataset';
-import { BaseChartDirective, ChartsModule  } from 'ng2-charts';
+//import { ChartModule } from 'angular2-highcharts';
 import { DisplayComponent } from './display.component';
 
 //ng on changes
 //http://stackoverflow.com/questions/35823698/how-to-make-ngonchanges-work-in-angular2
 
 @Component({
-  selector: 'setChart',
-  templateUrl: 'app/views/setchart.html',  
+  selector: 'chart2',
+  templateUrl: 'app/views/chart2.html',  
 })
 
-export class SetChart {
+export class Chart2 {
  
-  @ViewChild(BaseChartDirective)
-  public chart: BaseChartDirective;
-
+ 
   @Input() currentClientC: string;
 
   @Input() currentNodeC: string;
@@ -41,6 +39,7 @@ export class SetChart {
 
     
   }
+
   //incoming data from loggingService Get request
   public dataset:Dataset[] = [];
 
@@ -51,52 +50,29 @@ export class SetChart {
   public clientLabels: any = [];
   public nodeLabels: any = []
   
+  lineChartData:any[];
+  barChartData:any[];
+  barChartLabels:any[];
   // variable toggles activelyLook() to stop the repeating get requests
   public activelyLookForData: boolean = true;
-
- //Line Chart Data from http://valor-software.com/ng2-charts/ using chart.js and ng-2charts plugins
-   public lineChartData:Array<any> = [
-    {data: [65, 59, 80, 81 ], label: 'Client 1'},
-    {data: [28, 48, 40, 20], label: 'Client 2'},
-    {data: [18, 48, 77, 9 ], label: 'Client 3'}
-   ];
-
-  //public lineChartLabels:Array<any> = ['30< min', '25< min', '15< min', '5< min'];
-  public lineChartType:string = 'line';
-  public lineChartOptions:any = {
-    responsive: true,
-    maintainAspectRatio: true
-  };
-  public lineChartLegend:boolean = true;
-  
-  
-  /** Bar Chart Variables  */
-
-  public barChartOptions:any = {
-    scaleShowVerticalLines: false,
-    responsive: true
-  };
-  public barChartLabels:string[] = ['NodeA', "NodeB", "NodeC"];
-  public barChartType:string = 'bar';
-  public barChartLegend:boolean = true;
  
-  public barChartData:any[] = [
-    {data: ["3", "2"], label:"Client A"},
-    {data: ["2", "1"], label:"Client B"},
-    {data: ["5", "2"], label:"Client C"},
-    {data: ["5", "2"], label:"Client D"},
-    {data: ["5", "2"], label:"Client E"},
-    {data: ["5", "2"], label:"Client F"},
-    
-    
-    ];
+  constructor (private loggerService: LoggerService, private sanitizer: DomSanitizer, 
+                ) 
+                {
+                    this.options = {
+                        title: { text: "Node Logger Data"},
+                        chart: {type: 'spline' },
+                        series: [{
+                            data: [12,14,60,14,30],
 
- 
-  
-  
-
-  // creating instance of LoggerService
-  constructor (private loggerService: LoggerService, private sanitizer: DomSanitizer, private _applicationRef: ApplicationRef) {}
+                        }]
+                    };
+                }   
+            chart : any = {};    
+            options: any = {};
+            saveInstance(chartInstance:any) {
+                this.chart = chartInstance;
+            }
  
 
   ngOnInit(): void {
@@ -345,24 +321,5 @@ public updateData () {
     console.log(e);
   }
  
-  public barChartRandomize():void {
-    // Only Change 3 values
-    let data = [
-      Math.round(Math.random() * 100),
-      59,
-      80,
-      (Math.random() * 100),
-      56,
-      (Math.random() * 100),
-      40];
-    let clone = JSON.parse(JSON.stringify(this.barChartData));
-    clone[0].data = data;
-    this.barChartData = clone;
-    /**
-     * (My guess), for Angular to recognize the change in the dataset
-     * it has to change the dataset variable directly,
-     * so one way around it, is to clone the data, change it and then
-     * assign it;
-     */
-  }
+
 }

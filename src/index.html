@@ -8,12 +8,14 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css">
     
-    <!-- chart.js -->
-    <script src="node_modules/chart.js/dist/Chart.min.js"></script>
+    
     
     <!-- JQuery for Material Design -->
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
 
+    <!-- chart.js -->
+    <script src="node_modules/chart.js/dist/Chart.min.js"></script>
+    
     <!-- Bootstrap Base Files -->
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -23,6 +25,7 @@
     <script src="node_modules/bootstrap-material-design/dist/js/material.min.js"></script>
     <script src="node_modules/bootstrap-material-design/dist/js/ripples.min.js"></script>
 
+    
     
     <!-- Polyfill(s) for older browsers -->
     <script src="node_modules/core-js/client/shim.min.js"></script>
@@ -34,6 +37,40 @@
     <script>
        $.material.init()
       System.import('main.js').catch(function(err){ console.error(err); });
+    </script>
+
+    <script type="text/javascript" charset="utf-8">
+      $(document).ready(function() {
+
+            var max_value = 60
+
+            chartOptions = {
+              segmentShowStroke: false,
+              percentageInnerCutout: 75,
+              animation: false
+            };
+
+            chartData = [{
+                value: 0,
+                color: '#4FD134'
+            },{
+                value: max_value,
+                color: '#DDDDDD'
+            }];
+
+            var ctx = $('#chart').get(0).getContext("2d");
+            var theChart = new Chart(ctx).Doughnut(chartData,chartOptions);
+
+            theInterval = setInterval(function(){ 
+                if (theChart.segments[0].value == max_value) {
+                    clearInterval(theInterval);
+                } else {
+                    theChart.segments[0].value = theChart.segments[0].value+1
+                    theChart.segments[1].value = theChart.segments[1].value-1
+                    theChart.update()
+                }
+            }, 1000);
+      });
     </script>
   </head>
 

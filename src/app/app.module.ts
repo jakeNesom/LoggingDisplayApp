@@ -14,6 +14,8 @@ import { NavComponent }  from './nav.component';
 import { SetChart } from "./setChart.component";
 import { DisplayComponent } from "./display.component";
 import { LoggerService } from "./loggerdata.service";
+import { Chart2 } from './chart2.component';
+import { ChartModule } from 'angular2-highcharts';
 
 @NgModule({
   imports:      [ 
@@ -21,13 +23,15 @@ import { LoggerService } from "./loggerdata.service";
     ChartsModule,
     FormsModule,
     HttpModule,
-    InMemoryWebApiModule.forRoot(InMemoryDataService)
+    InMemoryWebApiModule.forRoot(InMemoryDataService),
+   // ChartModule.forRoot(require('highcharts'))
     ],
   declarations: [ 
     AppComponent,
     NavComponent,
     SetChart,
-    DisplayComponent
+    DisplayComponent,
+    Chart2
     ],
   providers: [LoggerService],
   bootstrap:    [ AppComponent ],
