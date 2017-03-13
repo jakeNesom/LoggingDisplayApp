@@ -27,6 +27,8 @@ export class SetChart {
  
   @Input() timeFilterC: string;
 
+  @Input() activelyLookForData: boolean;
+
   ngOnChanges(changes: any []) {
     console.log("onChange fired");
     console.log("changing", changes);
@@ -52,22 +54,8 @@ export class SetChart {
   public nodeLabels: any = []
   
   // variable toggles activelyLook() to stop the repeating get requests
-  public activelyLookForData: boolean = true;
+  
 
- //Line Chart Data from http://valor-software.com/ng2-charts/ using chart.js and ng-2charts plugins
-   public lineChartData:Array<any> = [
-    {data: [65, 59, 80, 81 ], label: 'Client 1'},
-    {data: [28, 48, 40, 20], label: 'Client 2'},
-    {data: [18, 48, 77, 9 ], label: 'Client 3'}
-   ];
-
-  //public lineChartLabels:Array<any> = ['30< min', '25< min', '15< min', '5< min'];
-  public lineChartType:string = 'line';
-  public lineChartOptions:any = {
-    responsive: true,
-    maintainAspectRatio: true
-  };
-  public lineChartLegend:boolean = true;
   
   
   /** Bar Chart Variables  */
@@ -101,8 +89,8 @@ export class SetChart {
 
   ngOnInit(): void {
 
-    this.loggerService.getLoggerData()
-      .then(dataset => this.dataset = dataset );
+   // this.loggerService.getLoggerData()
+    //  .then(dataset => this.dataset = dataset );
 
     this.loggerService.getLoggerData()
       .then( dataset => this.setData(dataset) );
@@ -132,15 +120,44 @@ export class SetChart {
         this.dataset = this.dataset.slice();
      }
      this.nodeFilter();
+
+     // filter time
+     if( this.timeFilterC == "ALL")
+     {
+       this.filterTime();
+     }
      this.setClientLabels(this.dataset);
      //this.removeExtraLabels();
      this.setNodeLabels(this.dataset);
      this.countAllClientsNodes(this.dataset);
      this.setBarChartData();
      this.updateData();
+     
     
 }
 
+private filterTime () {
+
+  let data = this.dataset;
+  let currentTime = ["12", "31", "00"];
+  let currentMinutes = parseInt(currentTime[1]);
+
+  for(let i = 0; i < data.length; i++ )
+  {
+    let time = data[i].time.split(":");
+    let minutes = parseInt(time[1]);
+    if( this.timeFilterC == "Last 5")
+    {
+      if( minutes >= (currentMinutes - 5) ) 
+      {
+         data.splice(i, 1);
+      }
+    }
+  }
+
+  this.dataset = data.slice();
+  
+}
 private setClientLabels(incomingData:any) {
   let labels:any = [];
     //create labels array which fills 'pieChartLables[]'
@@ -317,16 +334,7 @@ public updateData () {
 
  // THE FOLLOWING FUNCTIONS ARE LEFTOVER FROM THE ng2-charts examples I used to create this Component, none are being used
 
-  public randomize():void {
-    let _lineChartData:Array<any> = new Array(this.lineChartData.length);
-    for (let i = 0; i < this.lineChartData.length; i++) {
-      _lineChartData[i] = {data: new Array(this.lineChartData[i].data.length), label: this.lineChartData[i].label};
-      for (let j = 0; j < this.lineChartData[i].data.length; j++) {
-        _lineChartData[i].data[j] = Math.floor((Math.random() * 100) + 1);
-      }
-    }
-    this.lineChartData = _lineChartData;
-  }
+  
  
   public chartClicked(e:any):void {
     console.log(e);

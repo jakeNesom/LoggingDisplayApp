@@ -6,6 +6,11 @@
                 </div>
                 <div class="panel-body">
 
+                        <div (click)="toggleCheck()" [ngClass]="activelyLookForData == true ? 'btn-success' : 'btn-danger' " class="btn btn-sm btn-raised active">
+                            <span *ngIf='activelyLookForData'> <strong style="color:black"> Checking for new Data ...</strong> </span>
+                            <span *ngIf='!activelyLookForData'> <strong style="color:black"> Not checking for new data </strong> </span>
+                        </div>
+                        
                         <div class="form-group">
                             <label for="clientSelect" class="col-md-2 control-label">Select Client</label>
                             <div class="col-md-10">
@@ -36,34 +41,19 @@
                 </div> <!-- end of panel-body -->
                 
             </div> <!-- end of panel-default -->
-            <div class="panel">
-                <div class="panel-heading"><h5>Add new entries</h5></div>
-                <div class="panel-body">
-                    <form class="form-horizontal">
-                        <!--<legend>Legend </legend>-->
-                            <div class="form-control" style="margin-bottom: 45px;">
-                                <label for="client">Client:</label>
-                                <input type="text" class="form-control" id="client">
-                            </div>
-                            <div class="form-control" style="margin-bottom: 35px;">
-                                <label for="Node">Node:</label>
-                                <input type="text" class="form-control" id="node">
-                            </div>
-                        
-                    </form>
-                    <div class="btn btn-success btn-raised btn-sm"style="margin-top: 20px;">Add</div>
-                </div>
-            </div>
+           
         </div> <!-- end of column -->
       
                 <!--<chart2 
                         [currentClientC]='currentClient' 
                         [currentNodeC]='currentNode' 
                         [timeFilterC]='timeFilter'></chart2>-->
+                
                 <setChart
                     [currentClientC]='currentClient' 
                         [currentNodeC]='currentNode' 
-                        [timeFilterC]='timeFilter'> </setChart>
+                        [timeFilterC]='timeFilter'
+                        [activelyLookForData] = 'activelyLookForData'> </setChart>
         
         
     </div> <!-- end of first row -->

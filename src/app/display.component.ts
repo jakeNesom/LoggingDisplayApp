@@ -34,6 +34,8 @@ export class DisplayComponent  {
   public currentClient = "ALL";
   public currentNode = "All";
   public timeFilter = "ALL";
+  
+  public activelyLookForData: boolean = true;
 
   
   public allData = {
@@ -135,6 +137,12 @@ export class DisplayComponent  {
     this.allData.timeFilter = value;
     this.timeFilter = value;
     console.log(this.allData.timeFilter);
+  }
+
+  toggleCheck ()
+  {
+    if( this.activelyLookForData == true ) this.activelyLookForData = false;
+    else this.activelyLookForData = true; 
   }
 
  }
