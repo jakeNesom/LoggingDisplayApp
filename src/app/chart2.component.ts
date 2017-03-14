@@ -13,7 +13,7 @@ import { DisplayComponent } from './display.component';
 
 @Component({
   selector: 'chart2',
-  templateUrl: 'app/views/chart2.html',  
+  templateUrl: 'app/views/testchart.html',  
 })
 
 export class Chart2 {
@@ -80,8 +80,8 @@ export class Chart2 {
     this.loggerService.getLoggerData()
       .then(dataset => this.dataset = dataset );
 
-    this.loggerService.getLoggerData()
-      .then( dataset => this.setData(dataset) );
+    // this.loggerService.getLoggerData()
+    //   .then( dataset => this.setData(dataset) );
   }
 
   public lookForNewData() {

@@ -5,7 +5,7 @@ import { ApplicationRef } from '@angular/core';
 
 import { LoggerService } from './loggerdata.service';
 import { Dataset } from './definitions/dataset';
-import { BaseChartDirective, ChartsModule  } from 'ng2-charts';
+//import { BaseChartDirective, ChartsModule  } from 'ng2-charts';
 import { DisplayComponent } from './display.component';
 
 //ng on changes
@@ -18,8 +18,8 @@ import { DisplayComponent } from './display.component';
 
 export class SetChart {
  
-  @ViewChild(BaseChartDirective)
-  public chart: BaseChartDirective;
+ // @ViewChild(BaseChartDirective)
+//  public chart: BaseChartDirective;
 
   @Input() currentClientC: string;
 
