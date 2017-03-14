@@ -32,7 +32,7 @@ export class DisplayComponent  {
   public clientList:string[] = [];
 
   public currentClient = "ALL";
-  public currentNode = "All";
+  public currentNode = "ALL";
   public timeFilter = "ALL";
   
   public activelyLookForData: boolean = true;
@@ -143,6 +143,16 @@ export class DisplayComponent  {
   {
     if( this.activelyLookForData == true ) this.activelyLookForData = false;
     else this.activelyLookForData = true; 
+  }
+
+  resetSelect ()
+  {
+    this.currentClient = "ALL";
+    this.currentNode = "ALL";
+    this.timeFilter = "ALL";
+    this.allData.timeFilter = "ALL";
+    this.allData.currentClient = "ALL";
+    this.allData.currentNode = "ALL";
   }
 
  }

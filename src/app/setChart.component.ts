@@ -21,13 +21,15 @@ export class SetChart {
   @ViewChild(BaseChartDirective)
   public chart: BaseChartDirective;
 
+  // the @Inputs take variables passed from the parent component via the parent view where the current component view
+  // tags are written
   @Input() currentClientC: string;
 
   @Input() currentNodeC: string;
  
   @Input() timeFilterC: string;
 
-  @Input() activelyLookForData: boolean;
+  @Input() activelyLookForDataC: boolean;
 
   ngOnChanges(changes: any []) {
     console.log("onChange fired");
@@ -40,7 +42,13 @@ export class SetChart {
       if(key == "timeFilterC") { this.filters.time = this.timeFilterC; }
     }
 
+    if(this.initFlag = true) this.setData();
 
+    if( this.activelyLookForDataC !== this.newDataListening )
+    {
+      this.newDataListening = this.activelyLookForDataC;
+      //this.lookForNewData();
+    }
     
   }
   //incoming data from loggingService Get request
@@ -53,6 +61,9 @@ export class SetChart {
   public clientLabels: any = [];
   public nodeLabels: any = []
   
+
+  private initFlag: boolean = false;
+  private newDataListening: boolean = false;
   // variable toggles activelyLook() to stop the repeating get requests
   
 
@@ -86,7 +97,7 @@ export class SetChart {
   // creating instance of LoggerService
   constructor (private loggerService: LoggerService, private sanitizer: DomSanitizer, private _applicationRef: ApplicationRef) {}
  
-
+ // on init - run get service and initially set the data
   ngOnInit(): void {
 
    // this.loggerService.getLoggerData()
@@ -96,10 +107,11 @@ export class SetChart {
       .then( dataset => this.setData(dataset) );
   }
 
+  
   public lookForNewData() {
     
 
-    while(this.activelyLookForData = true)
+    while(this.newDataListening = true)
     {
         setTimeout(function() { 
           let newData:any;
@@ -115,23 +127,37 @@ export class SetChart {
   }
 
   private setData(incomingData?:any, filter?:any ):void {
+     
+     // this if statement should only be true on init
      if(incomingData) {
         this.dataset = incomingData;
         this.dataset = this.dataset.slice();
+        
+        this.initFlag = true;
      }
-     this.nodeFilter();
 
-     // filter time
-     if( this.timeFilterC == "ALL")
+     if( !incomingData )
+     {
+       this.loggerService.getLoggerData()
+      .then( dataset => this.setData(dataset) );
+     }
+
+     // filter time, then client, then node
+     if( this.timeFilterC != "ALL")
      {
        this.filterTime();
      }
+     if ( this.currentClientC != "ALL") { this.filterClient() }
+     
+     if ( this.currentNodeC !== "ALL") { this.filterNode() }
+     
+     // set labels
      this.setClientLabels(this.dataset);
      //this.removeExtraLabels();
      this.setNodeLabels(this.dataset);
      this.countAllClientsNodes(this.dataset);
      this.setBarChartData();
-     this.updateData();
+     //this.updateData();
      
     
 }
@@ -142,22 +168,62 @@ private filterTime () {
   let currentTime = ["12", "31", "00"];
   let currentMinutes = parseInt(currentTime[1]);
 
-  for(let i = 0; i < data.length; i++ )
+  let i = 0;
+  while (i < data.length)
   {
     let time = data[i].time.split(":");
     let minutes = parseInt(time[1]);
     if( this.timeFilterC == "Last 5")
     {
-      if( minutes >= (currentMinutes - 5) ) 
+      if( minutes <= (currentMinutes - 5) ) 
       {
          data.splice(i, 1);
       }
+      else i++;
+
+    } else if ( this.timeFilterC == "Last 30")
+    {
+      if( minutes <= (currentMinutes - 30) )
+      {
+        data.splice(i, 1);
+      } else i++;
     }
   }
 
   this.dataset = data.slice();
   
 }
+
+filterClient () {
+
+  let data = this.dataset;
+  let i = 0;
+  while(i < data.length )
+  {
+    if( data[i].client != this.currentClientC )
+    {
+      data.splice(i, 1);
+    }else i++
+  }
+
+  this.dataset = data;
+}
+filterNode() {
+  let data = this.dataset;
+  let i = 0;
+  while(i < data.length )
+  {
+    if( data[i].node != this.currentNodeC )
+    {
+      data.splice(i, 1);
+    }else i++
+  }
+
+  this.dataset = data;
+  
+}
+
+
 private setClientLabels(incomingData:any) {
   let labels:any = [];
     //create labels array which fills 'pieChartLables[]'
@@ -298,26 +364,16 @@ private setNodeLabels(incomingData:any) {
       this.barChartData = this.barChartData.slice();
   }
      
-  private timeFilter () {
 
-  }
-  private nodeFilter () {
-
-    if(this.filters.node != "ALL")
-    {
-
-       
-
-    }
-  }
+ 
  
 
-public updateData () {
+// public updateData () {
   
   
-  this.chart.chart.labels = this.barChartLabels.slice();
-  this.chart.chart.datasets = this.barChartData.splice(this.barChartData.length,1);
-}
+//   this.chart.chart.labels = this.barChartLabels.slice();
+//   this.chart.chart.datasets = this.barChartData.splice(this.barChartData.length,1);
+// }
  
 
 

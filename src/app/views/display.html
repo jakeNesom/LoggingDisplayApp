@@ -5,12 +5,12 @@
                     <h5>Options</h5>
                 </div>
                 <div class="panel-body">
-
+                
                         <div (click)="toggleCheck()" [ngClass]="activelyLookForData == true ? 'btn-success' : 'btn-danger' " class="btn btn-sm btn-raised active">
-                            <span *ngIf='activelyLookForData'> <strong style="color:black"> Checking for new Data ...</strong> </span>
-                            <span *ngIf='!activelyLookForData'> <strong style="color:black"> Not checking for new data </strong> </span>
+                            <span *ngIf='activelyLookForData'> <span style="color:white;"><i class="fa fa-refresh fa-spin" aria-hidden="true"></i> &nbsp; Refreshing Data </span> </span>
+                            <span *ngIf='!activelyLookForData'> <span style="color:white"> Refresh Stopped </span> </span>
                         </div>
-                        
+                <form>        
                         <div class="form-group">
                             <label for="clientSelect" class="col-md-2 control-label">Select Client</label>
                             <div class="col-md-10">
@@ -38,6 +38,11 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <button type="reset" class="btn btn-sm btn-primary" (click)="resetSelect()" 
+                                for="resetSelect">Reset</button>
+                        </div>
+                    </form>
                 </div> <!-- end of panel-body -->
                 
             </div> <!-- end of panel-default -->
@@ -53,7 +58,7 @@
                     [currentClientC]='currentClient' 
                         [currentNodeC]='currentNode' 
                         [timeFilterC]='timeFilter'
-                        [activelyLookForData] = 'activelyLookForData'> </setChart>
+                        [activelyLookForDataC] = 'activelyLookForData'> </setChart>
         
         
     </div> <!-- end of first row -->
