@@ -42,7 +42,14 @@ export class SetChart {
       if(key == "timeFilterC") { this.filters.time = this.timeFilterC; }
     }
 
-    if(this.initFlag = true) this.setData();
+    if(this.initFlag = true) 
+    {
+      
+       this.loggerService.getLoggerData()
+      .then( dataset => this.setData(dataset) );
+     
+      
+    }
 
     if( this.activelyLookForDataC !== this.newDataListening )
     {
@@ -75,10 +82,15 @@ export class SetChart {
     scaleShowVerticalLines: false,
     responsive: true
   };
+
+  public oldBarChartLabeles:string[];
   public barChartLabels:string[] = ['NodeA', "NodeB", "NodeC"];
+
   public barChartType:string = 'bar';
   public barChartLegend:boolean = true;
  
+  public oldBarChartData:any[];
+
   public barChartData:any[] = [
     {data: ["3", "2"], label:"Client A"},
     {data: ["2", "1"], label:"Client B"},
@@ -128,6 +140,9 @@ export class SetChart {
 
   private setData(incomingData?:any, filter?:any ):void {
      
+     this.oldBarChartData = this.barChartData;
+     this.oldBarChartLabeles = this.barChartLabels;
+
      // this if statement should only be true on init
      if(incomingData) {
         this.dataset = incomingData;
@@ -136,11 +151,11 @@ export class SetChart {
         this.initFlag = true;
      }
 
-     if( !incomingData )
-     {
-       this.loggerService.getLoggerData()
-      .then( dataset => this.setData(dataset) );
-     }
+    //  if( !incomingData )
+    //  {
+    //    this.loggerService.getLoggerData()
+    //   .then( dataset => this.setData(dataset) );
+    //  }
 
      // filter time, then client, then node
      if( this.timeFilterC != "ALL")
@@ -157,6 +172,7 @@ export class SetChart {
      this.setNodeLabels(this.dataset);
      this.countAllClientsNodes(this.dataset);
      this.setBarChartData();
+     this.removePreviousData();
      //this.updateData();
      
     
@@ -207,6 +223,7 @@ filterClient () {
   }
 
   this.dataset = data;
+  this.dataset.slice();
 }
 filterNode() {
   let data = this.dataset;
@@ -220,6 +237,7 @@ filterNode() {
   }
 
   this.dataset = data;
+  this.dataset.slice();
   
 }
 
@@ -236,6 +254,7 @@ private setClientLabels(incomingData:any) {
       }
 
     this.clientLabels = labels;
+    this.clientLabels.slice();
     
     
 }
@@ -243,16 +262,14 @@ private setClientLabels(incomingData:any) {
 
 // right now ng-2 charts only refreshes data when a label from the barChartData[x].label value has changed
 // 
-private removeExtraLabels()
+private removePreviousData()
 {
-  if (this.barChartData.length > this.clientLabels.length) 
-  {
-    let extra = this.barChartData.length - this.clientLabels.length;
-    let length = this.clientLabels.length;
+  let chartExtra = this.oldBarChartData.length - this.barChartData.length;
 
-    this.barChartData.splice(5,1);
-    this.barChartData = this.barChartData.slice();
-  }
+  let labelExtra = this.oldBarChartLabeles.length - this.barChartLabels.length;
+
+  if(chartExtra > 0) { this.barChartData.splice(chartExtra) }
+  if(labelExtra > 0) { this.barChartLabels.splice(labelExtra) }
 
 }
 

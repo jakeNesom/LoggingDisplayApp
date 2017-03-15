@@ -26,7 +26,7 @@
       // other libraries
       'rxjs':                      'npm:rxjs',
       'angular-in-memory-web-api': 'npm:angular-in-memory-web-api/bundles/in-memory-web-api.umd.js',
-      'ng2-charts' : 'npm:ng2-charts/bundles/ng2-charts.umd.js',
+      'ng2-charts' : 'npm:ng2-charts/charts/bundles/ng2-charts.umd.js',
       'angular2-highcharts' : 'node_modules_/angular2-highcharts',
       'highcharts' : 'node_modules/highcharts'
     },
